@@ -131,6 +131,42 @@ export function deleteResourceItem(resourcePath, id) {
   return json(`${resourcePath}/${id}`, { method: 'DELETE' });
 }
 
+export function getCustomFields() {
+  return json('/custom-fields');
+}
+
+export function createCustomField(data) {
+  return json('/custom-fields', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateCustomField(name, data) {
+  return json(`/custom-fields/${name}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+}
+
+export function deleteCustomField(name) {
+  return json(`/custom-fields/${name}`, { method: 'DELETE' });
+}
+
+export function exportCustomFields() {
+  return json('/custom-fields/export');
+}
+
+export function importCustomFields(data) {
+  return json('/custom-fields/import', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+}
+
 export function testAuth() {
   return json('/fields');
 }

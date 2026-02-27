@@ -20,6 +20,8 @@ import {
   getFields, getEntries, getEntry, getAuthMethod,
   deleteEntry, updateEntry, testAuth,
   getResourceItems, createResourceItem, updateResourceItem, deleteResourceItem,
+  getCustomFields, createCustomField, updateCustomField, deleteCustomField,
+  exportCustomFields, importCustomFields,
 } from './api.js';
 
 function mockJsonResponse(body, ok = true, status = 200) {
@@ -239,5 +241,85 @@ describe('deleteResourceItem', () => {
     const [url, options] = global.fetch.mock.calls[0];
     expect(url).toContain('/projects/1');
     expect(options.method).toBe('DELETE');
+  });
+});
+
+describe('getCustomFields', () => {
+  it('fetches custom fields list', async () => {
+    const body = { data: [{ name: 'status', option_count: 3 }] };
+    global.fetch.mockResolvedValueOnce(mockJsonResponse(body));
+
+    const result = await getCustomFields();
+
+    expect(result.data).toHaveLength(1);
+    expect(result.data[0].name).toBe('status');
+    const [url] = global.fetch.mock.calls[0];
+    expect(url).toContain('/custom-fields');
+  });
+});
+
+describe('createCustomField', () => {
+  it('sends POST with JSON body', async () => {
+    global.fetch.mockResolvedValueOnce(mockJsonResponse({ name: 'priority' }));
+
+    await createCustomField({ name: 'priority', description: 'Priority level' });
+
+    const [url, options] = global.fetch.mock.calls[0];
+    expect(url).toContain('/custom-fields');
+    expect(options.method).toBe('POST');
+    expect(options.headers['Content-Type']).toBe('application/json');
+    expect(JSON.parse(options.body)).toEqual({ name: 'priority', description: 'Priority level' });
+  });
+});
+
+describe('updateCustomField', () => {
+  it('sends PUT with JSON body to field URL', async () => {
+    global.fetch.mockResolvedValueOnce(mockJsonResponse({ name: 'status', description: 'Updated' }));
+
+    await updateCustomField('status', { description: 'Updated' });
+
+    const [url, options] = global.fetch.mock.calls[0];
+    expect(url).toContain('/custom-fields/status');
+    expect(options.method).toBe('PUT');
+    expect(JSON.parse(options.body)).toEqual({ description: 'Updated' });
+  });
+});
+
+describe('deleteCustomField', () => {
+  it('sends DELETE to field URL', async () => {
+    global.fetch.mockResolvedValueOnce(mockJsonResponse({ success: true }));
+
+    await deleteCustomField('status');
+
+    const [url, options] = global.fetch.mock.calls[0];
+    expect(url).toContain('/custom-fields/status');
+    expect(options.method).toBe('DELETE');
+  });
+});
+
+describe('exportCustomFields', () => {
+  it('fetches export endpoint', async () => {
+    const body = { fields: [{ name: 'status', options: ['open', 'closed'] }] };
+    global.fetch.mockResolvedValueOnce(mockJsonResponse(body));
+
+    const result = await exportCustomFields();
+
+    expect(result.fields).toHaveLength(1);
+    const [url] = global.fetch.mock.calls[0];
+    expect(url).toContain('/custom-fields/export');
+  });
+});
+
+describe('importCustomFields', () => {
+  it('sends POST with JSON body to import endpoint', async () => {
+    const importData = { fields: [{ name: 'status', options: ['open'] }] };
+    global.fetch.mockResolvedValueOnce(mockJsonResponse({ imported: 1 }));
+
+    await importCustomFields(importData);
+
+    const [url, options] = global.fetch.mock.calls[0];
+    expect(url).toContain('/custom-fields/import');
+    expect(options.method).toBe('POST');
+    expect(JSON.parse(options.body)).toEqual(importData);
   });
 });

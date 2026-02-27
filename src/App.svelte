@@ -13,6 +13,7 @@
   import Settings from './routes/Settings.svelte';
   import SettingsBuiltInValues from './routes/SettingsBuiltInValues.svelte';
   import SettingsResourceManager from './routes/SettingsResourceManager.svelte';
+  import SettingsCustomFields from './routes/SettingsCustomFields.svelte';
 
   let initialized = $state(false);
 
@@ -29,6 +30,7 @@
     '/upload': wrap({ component: Upload, conditions: [isAuthenticated] }),
     '/settings': wrap({ component: Settings, conditions: [isAuthenticated] }),
     '/settings/built-in-values': wrap({ component: SettingsBuiltInValues, conditions: [isAuthenticated] }),
+    '/settings/custom-fields': wrap({ component: SettingsCustomFields, conditions: [isAuthenticated] }),
     '/settings/resources/:name': wrap({ component: SettingsResourceManager, conditions: [isAuthenticated] }),
   };
 

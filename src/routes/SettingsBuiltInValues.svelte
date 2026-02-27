@@ -71,7 +71,7 @@
   <div class="mb-6">
     <a href="/settings" use:link class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">&larr; Back to Settings</a>
   </div>
-  <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Built-in Values</h1>
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Default Values</h1>
 
   {#if loading}
     <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
