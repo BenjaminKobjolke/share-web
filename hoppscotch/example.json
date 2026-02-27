@@ -1,0 +1,162 @@
+{
+  "v": 11,
+  "id": "user-settings-collection",
+  "name": "User Settings",
+  "folders": [],
+  "requests": [
+    {
+      "v": "17",
+      "name": "user/settings/all-keys",
+      "method": "POST",
+      "endpoint": "<<baseURLApi>>user/settings/all-keys",
+      "params": [],
+      "headers": [],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "text/plain",
+        "body": "{\n    \"key\": \"<<apiKey>>\"\n}"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "description": "List all user settings keys across ALL users. Uses basic API key auth (no user auth needed). Returns backend_keys (with metadata) and client_keys (all key names stored in database)."
+    },
+    {
+      "v": "17",
+      "name": "user/settings/keys",
+      "method": "POST",
+      "endpoint": "<<baseURLApi>>user/settings/keys",
+      "params": [],
+      "headers": [],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "text/plain",
+        "body": "{\n    \"user_id\": <<userId>>,\n    \"api_token\": \"<<apiToken>>\",\n    \"software\": \"<<software>>\"\n}"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "description": "List available user settings keys. Returns backend_keys (with metadata) and client_keys (key names stored in database by current user)."
+    },
+    {
+      "v": "17",
+      "name": "user/settings/create",
+      "method": "POST",
+      "endpoint": "<<baseURLApi>>user/settings/create",
+      "params": [],
+      "headers": [],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "text/plain",
+        "body": "{\n    \"user_id\": <<userId>>,\n    \"api_token\": \"<<apiToken>>\",\n    \"software\": \"<<software>>\",\n    \"setting_key\": \"prompt_spam\",\n    \"setting_value\": \"Mark as spam if sender is unknown\"\n}"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "description": "Create or update a user setting. Uses UPSERT behavior - updates if key exists, creates if not."
+    },
+    {
+      "v": "17",
+      "name": "user/settings/get",
+      "method": "POST",
+      "endpoint": "<<baseURLApi>>user/settings/get",
+      "params": [],
+      "headers": [],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "text/plain",
+        "body": "{\n    \"user_id\": <<userId>>,\n    \"api_token\": \"<<apiToken>>\",\n    \"software\": \"<<software>>\",\n    \"setting_key\": \"prompt_spam\"\n}"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "description": "Get a specific user setting by key. Can also request multiple keys with comma-separated values."
+    },
+    {
+      "v": "17",
+      "name": "user/settings/all",
+      "method": "POST",
+      "endpoint": "<<baseURLApi>>user/settings/all",
+      "params": [],
+      "headers": [],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "text/plain",
+        "body": "{\n    \"user_id\": <<userId>>,\n    \"api_token\": \"<<apiToken>>\",\n    \"software\": \"<<software>>\"\n}"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "description": "Get all user settings for the authenticated user."
+    },
+    {
+      "v": "17",
+      "name": "user/settings/delete",
+      "method": "POST",
+      "endpoint": "<<baseURLApi>>user/settings/delete",
+      "params": [],
+      "headers": [],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "text/plain",
+        "body": "{\n    \"user_id\": <<userId>>,\n    \"api_token\": \"<<apiToken>>\",\n    \"software\": \"<<software>>\",\n    \"setting_key\": \"prompt_spam\"\n}"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "description": "Delete a specific user setting by key."
+    },
+    {
+      "v": "17",
+      "name": "user/settings/deleteall",
+      "method": "POST",
+      "endpoint": "<<baseURLApi>>user/settings/deleteall",
+      "params": [],
+      "headers": [],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "text/plain",
+        "body": "{\n    \"user_id\": <<userId>>,\n    \"api_token\": \"<<apiToken>>\",\n    \"software\": \"<<software>>\"\n}"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "description": "Delete all user settings for the authenticated user. Use with caution."
+    }
+  ],
+  "auth": {
+    "authType": "inherit",
+    "authActive": true
+  },
+  "headers": [],
+  "variables": [],
+  "description": "API endpoints for managing user-specific key-value settings. Supports both backend-defined settings (like spam prompts) and arbitrary client-defined settings (like theme, language)."
+}

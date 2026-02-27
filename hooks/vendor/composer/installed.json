@@ -1,0 +1,67 @@
+{
+    "packages": [
+        {
+            "name": "beyondcode/claude-hooks-sdk",
+            "version": "0.1.0",
+            "version_normalized": "0.1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/beyondcode/claude-hooks-sdk.git",
+                "reference": "2a449bc17c28b72a1e52e4215e9f467bf370191e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/beyondcode/claude-hooks-sdk/zipball/2a449bc17c28b72a1e52e4215e9f467bf370191e",
+                "reference": "2a449bc17c28b72a1e52e4215e9f467bf370191e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "pestphp/pest": "^3.0"
+            },
+            "time": "2025-07-03T20:17:49+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "BeyondCode\\ClaudeHooks\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marcel Pociot",
+                    "email": "marcel@beyondco.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A PHP SDK for building Claude Code hooks.",
+            "homepage": "https://github.com/beyondcode/claude-hooks-sdk",
+            "keywords": [
+                "beyondcode",
+                "claude",
+                "claude-hooks-sdk",
+                "hooks"
+            ],
+            "support": {
+                "issues": "https://github.com/beyondcode/claude-hooks-sdk/issues",
+                "source": "https://github.com/beyondcode/claude-hooks-sdk/tree/0.1.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/beyondcode",
+                    "type": "github"
+                }
+            ],
+            "install-path": "../beyondcode/claude-hooks-sdk"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": []
+}
