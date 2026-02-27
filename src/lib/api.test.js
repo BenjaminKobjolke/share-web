@@ -19,6 +19,7 @@ vi.mock('../stores/auth.js', async () => {
 import {
   getFields, getEntries, getEntry, getAuthMethod,
   deleteEntry, updateEntry, testAuth,
+  getResourceItems, createResourceItem, updateResourceItem, deleteResourceItem,
 } from './api.js';
 
 function mockJsonResponse(body, ok = true, status = 200) {
@@ -86,6 +87,29 @@ describe('getEntries', () => {
 
     expect(result.entries).toBeInstanceOf(Array);
     expect(result.total).toBe(1);
+  });
+
+  it('appends filters as query params', async () => {
+    const envelope = { entries: [], total: 0, page: 1, per_page: 20 };
+    global.fetch.mockResolvedValueOnce(mockJsonResponse(envelope));
+
+    await getEntries(1, 20, { project_id: '3' });
+
+    const [url] = global.fetch.mock.calls[0];
+    expect(url).toContain('project_id=3');
+    expect(url).toContain('page=1');
+    expect(url).toContain('per_page=20');
+  });
+
+  it('omits empty or null filter values', async () => {
+    const envelope = { entries: [], total: 0, page: 1, per_page: 20 };
+    global.fetch.mockResolvedValueOnce(mockJsonResponse(envelope));
+
+    await getEntries(1, 20, { project_id: '', status_id: null });
+
+    const [url] = global.fetch.mock.calls[0];
+    expect(url).not.toContain('project_id');
+    expect(url).not.toContain('status_id');
   });
 });
 
@@ -162,5 +186,58 @@ describe('testAuth', () => {
 
     const [url] = global.fetch.mock.calls[0];
     expect(url).toContain('/fields');
+  });
+});
+
+describe('getResourceItems', () => {
+  it('fetches items from the given resource path', async () => {
+    const body = { data: [{ id: 1, name: 'Alpha' }] };
+    global.fetch.mockResolvedValueOnce(mockJsonResponse(body));
+
+    const result = await getResourceItems('/projects');
+
+    expect(result.data).toHaveLength(1);
+    expect(result.data[0].name).toBe('Alpha');
+    const [url] = global.fetch.mock.calls[0];
+    expect(url).toContain('/projects');
+  });
+});
+
+describe('createResourceItem', () => {
+  it('sends POST with JSON body', async () => {
+    global.fetch.mockResolvedValueOnce(mockJsonResponse({ id: 3, name: 'New' }));
+
+    await createResourceItem('/projects', { name: 'New' });
+
+    const [url, options] = global.fetch.mock.calls[0];
+    expect(url).toContain('/projects');
+    expect(options.method).toBe('POST');
+    expect(options.headers['Content-Type']).toBe('application/json');
+    expect(JSON.parse(options.body)).toEqual({ name: 'New' });
+  });
+});
+
+describe('updateResourceItem', () => {
+  it('sends PUT with JSON body to item URL', async () => {
+    global.fetch.mockResolvedValueOnce(mockJsonResponse({ id: 1, name: 'Updated' }));
+
+    await updateResourceItem('/projects', 1, { name: 'Updated' });
+
+    const [url, options] = global.fetch.mock.calls[0];
+    expect(url).toContain('/projects/1');
+    expect(options.method).toBe('PUT');
+    expect(JSON.parse(options.body)).toEqual({ name: 'Updated' });
+  });
+});
+
+describe('deleteResourceItem', () => {
+  it('sends DELETE to item URL', async () => {
+    global.fetch.mockResolvedValueOnce(mockJsonResponse({ success: true }));
+
+    await deleteResourceItem('/projects', 1);
+
+    const [url, options] = global.fetch.mock.calls[0];
+    expect(url).toContain('/projects/1');
+    expect(options.method).toBe('DELETE');
   });
 });

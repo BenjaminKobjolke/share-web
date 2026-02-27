@@ -31,8 +31,12 @@ async function json(path, options = {}) {
   return res.json();
 }
 
-export function getEntries(page = 1, perPage = 20) {
-  return json(`/entries?page=${page}&per_page=${perPage}`);
+export function getEntries(page = 1, perPage = 20, filters = {}) {
+  const params = new URLSearchParams({ page, per_page: perPage });
+  for (const [key, value] of Object.entries(filters)) {
+    if (value != null && value !== '') params.set(key, value);
+  }
+  return json(`/entries?${params}`);
 }
 
 export function getEntry(id) {
@@ -101,6 +105,30 @@ export function uploadFile(file, extraFields = {}) {
 
 export function getFields() {
   return json('/fields');
+}
+
+export function getResourceItems(resourcePath) {
+  return json(resourcePath);
+}
+
+export function createResourceItem(resourcePath, data) {
+  return json(resourcePath, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateResourceItem(resourcePath, id, data) {
+  return json(`${resourcePath}/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+}
+
+export function deleteResourceItem(resourcePath, id) {
+  return json(`${resourcePath}/${id}`, { method: 'DELETE' });
 }
 
 export function testAuth() {
