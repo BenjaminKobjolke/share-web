@@ -68,39 +68,23 @@ export function deleteAttachment(id) {
 }
 
 export function uploadText(payload) {
-  // share.php is at the API root level, not under /api
-  const shareUrl = API_BASE_URL.replace(/\/api\/?$/, '') + '/share.php';
-  return fetch(shareUrl, {
+  return request('/upload', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
-  }).then(async (res) => {
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(text || res.statusText);
-    }
-    return res.text();
-  });
+  }).then(res => res.text());
 }
 
 export function uploadFile(file, extraFields = {}) {
-  const shareUrl = API_BASE_URL.replace(/\/api\/?$/, '') + '/share.php';
   const formData = new FormData();
   formData.append('file', file);
   for (const [key, value] of Object.entries(extraFields)) {
     formData.append(key, value);
   }
-  return fetch(shareUrl, {
+  return request('/upload', {
     method: 'POST',
-    headers: { ...getAuthHeader() },
     body: formData,
-  }).then(async (res) => {
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(text || res.statusText);
-    }
-    return res.text();
-  });
+  }).then(res => res.text());
 }
 
 export function getFields() {

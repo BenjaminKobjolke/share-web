@@ -11,10 +11,6 @@ export default defineConfig({
         target: 'http://localhost/media-file-explorer-share-api',
         changeOrigin: true,
       },
-      '/share.php': {
-        target: 'http://localhost/media-file-explorer-share-api',
-        changeOrigin: true,
-      },
     },
   },
   test: {
