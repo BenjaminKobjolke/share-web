@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "date": "2026-02-27",
+  "title": "Initial Release",
+  "sections": [
+    {
+      "heading": "Features",
+      "items": [
+        "Entry management with search, filtering and pagination",
+        "File and text upload with dynamic custom fields",
+        "Settings hub with default values and custom fields",
+        "Dark mode with OS preference detection"
+      ]
+    }
+  ]
+}
