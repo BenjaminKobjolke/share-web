@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { push } from 'svelte-spa-router';
   import { getEntry, getEntryFile, deleteEntry as apiDeleteEntry } from '../lib/api.js';
+  import { loadResourceFields } from '../lib/fields.js';
   import { notifications } from '../stores/notifications.js';
   import EntryHeader from '../components/detail/EntryHeader.svelte';
   import EntryBody from '../components/detail/EntryBody.svelte';
@@ -21,6 +22,8 @@
   let showDelete = $state(false);
   let showAdd = $state(false);
   let addMode = $state('text');
+  let resourceFields = $state([]);
+  let resourceMaps = $state({});
 
   async function load() {
     loading = true;
@@ -54,7 +57,13 @@
     load();
   }
 
-  onMount(load);
+  onMount(() => {
+    load();
+    loadResourceFields().then(r => {
+      resourceFields = r.resourceFields;
+      resourceMaps = r.resourceMaps;
+    }).catch(() => {});
+  });
 </script>
 
 {#if loading}
@@ -79,7 +88,7 @@
     </div>
 
     <div class="bg-white dark:bg-gray-900 rounded-lg shadow p-6">
-      <EntryHeader {entry} />
+      <EntryHeader {entry} {resourceFields} {resourceMaps} />
       <EntryBody body={entry.body} />
 
       {#if entry.type === 'file' && entry.file_url}

@@ -1,8 +1,9 @@
 <script>
   import TypeBadge from '../entries/TypeBadge.svelte';
   import { formatDate, formatFileSize } from '../../lib/utils.js';
+  import { fieldToColumn } from '../../lib/fields.js';
 
-  let { entry } = $props();
+  let { entry, resourceFields = [], resourceMaps = {} } = $props();
 </script>
 
 <div class="flex items-start justify-between">
@@ -18,6 +19,12 @@
         <span>{entry.filename} ({formatFileSize(entry.file_size)})</span>
       {/if}
       <span>IP: {entry.ip}</span>
+      {#each resourceFields as rf}
+        {@const col = fieldToColumn(rf.name)}
+        {#if entry[col] && resourceMaps[rf.name]?.[entry[col]]}
+          <span>{rf.resource.name}: {resourceMaps[rf.name][entry[col]]}</span>
+        {/if}
+      {/each}
     </div>
   </div>
 </div>
