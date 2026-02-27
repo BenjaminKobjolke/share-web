@@ -4,6 +4,7 @@ import { render, screen, waitFor } from '@testing-library/svelte';
 // Mock api.js
 vi.mock('../lib/api.js', () => ({
   getFields: vi.fn(),
+  getResourceItems: vi.fn(),
 }));
 
 // Mock svelte-spa-router's link action (accesses browser routing APIs)
@@ -11,7 +12,7 @@ vi.mock('svelte-spa-router', () => ({
   link: () => {},
 }));
 
-import { getFields } from '../lib/api.js';
+import { getFields, getResourceItems } from '../lib/api.js';
 import SettingsBuiltInValues from './SettingsBuiltInValues.svelte';
 
 beforeEach(() => {
@@ -23,34 +24,63 @@ describe('SettingsBuiltInValues', () => {
   it('renders fields from the API response envelope', async () => {
     getFields.mockResolvedValue({
       data: [
-        { name: '_project', type: 'string', description: 'Project name' },
+        { name: '_project', type: 'int', description: 'Select a project', resource: { name: 'projects', path: '/projects' } },
         { name: '_email', type: 'bool', description: 'Send email' },
+      ],
+    });
+    getResourceItems.mockResolvedValue({ data: [{ id: 1, name: 'Alpha' }] });
+
+    render(SettingsBuiltInValues);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Project')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('Email')).toBeInTheDocument();
+    expect(screen.getByText('Send email')).toBeInTheDocument();
+  });
+
+  it('renders resource field as select dropdown', async () => {
+    getFields.mockResolvedValue({
+      data: [
+        { name: '_project', type: 'int', description: 'Select a project', resource: { name: 'projects', path: '/projects' } },
+      ],
+    });
+    getResourceItems.mockResolvedValue({
+      data: [
+        { id: 1, name: 'Alpha' },
+        { id: 2, name: 'Beta' },
       ],
     });
 
     render(SettingsBuiltInValues);
 
     await waitFor(() => {
-      expect(screen.getByText('Project')).toBeInTheDocument();
+      expect(screen.getByLabelText('Project')).toBeInTheDocument();
     });
 
-    expect(screen.getByText('Email')).toBeInTheDocument();
-    expect(screen.getByText('Project name')).toBeInTheDocument();
-    expect(screen.getByText('Send email')).toBeInTheDocument();
+    // Should render a select with the resource options
+    const select = screen.getByRole('combobox');
+    expect(select).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('Alpha')).toBeInTheDocument();
+      expect(screen.getByText('Beta')).toBeInTheDocument();
+    });
   });
 
   it('filters out _id field', async () => {
     getFields.mockResolvedValue({
       data: [
         { name: '_id', type: 'int' },
-        { name: '_project', type: 'string' },
+        { name: '_email', type: 'bool' },
       ],
     });
 
     render(SettingsBuiltInValues);
 
     await waitFor(() => {
-      expect(screen.getByText('Project')).toBeInTheDocument();
+      expect(screen.getByText('Email')).toBeInTheDocument();
     });
 
     expect(screen.queryByText('Id')).not.toBeInTheDocument();
