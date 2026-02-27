@@ -4,17 +4,17 @@
   import { notifications } from '../../stores/notifications.js';
   import { settingsStore } from '../../stores/settings.js';
   import { link } from 'svelte-spa-router';
+  import DynamicFields from './DynamicFields.svelte';
 
   let { entryId = null, onadded = null } = $props();
 
   const defaults = get(settingsStore);
   let subject = $state('');
-  let project = $state(defaults._project || '');
   let textOrUrl = $state('');
-  let sendEmail = $state(defaults._email !== false);
   let uploading = $state(false);
   let result = $state(null);
   let copied = $state(false);
+  let getValues = $state(() => ({}));
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -22,12 +22,11 @@
 
     uploading = true;
     try {
-      const payload = { text_or_url: textOrUrl };
-      if (subject.trim()) payload.subject = subject;
-      if (project.trim()) payload._project = project;
-      if (entryId) payload._id = entryId;
-      if (!sendEmail) payload._email = false;
-      const response = await uploadText(payload);
+      const extra = getValues();
+      extra.text_or_url = textOrUrl;
+      if (subject.trim()) extra.subject = subject;
+      if (entryId) extra._id = entryId;
+      const response = await uploadText(extra);
       const trimmed = response.trim();
       const id = parseInt(trimmed);
       result = isNaN(id) ? { raw: trimmed } : { id };
@@ -46,12 +45,9 @@
   }
 
   function reset() {
-    const d = get(settingsStore);
     result = null;
     subject = '';
-    project = d._project || '';
     textOrUrl = '';
-    sendEmail = d._email !== false;
   }
 </script>
 
@@ -94,16 +90,7 @@
         class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
       />
     </div>
-    <div>
-      <label for="text-project" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Project (optional)</label>
-      <input
-        id="text-project"
-        type="text"
-        bind:value={project}
-        placeholder="Project name"
-        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-      />
-    </div>
+    <DynamicFields {defaults} bind:getValues />
     <div>
       <label for="text-body" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Text / URL</label>
       <textarea
@@ -115,11 +102,7 @@
         class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
       ></textarea>
     </div>
-    <div class="flex items-center justify-between">
-      <label class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-        <input type="checkbox" bind:checked={sendEmail} class="rounded" />
-        Send email notification
-      </label>
+    <div class="flex items-center justify-end">
       <button
         type="submit"
         disabled={uploading || !textOrUrl.trim()}

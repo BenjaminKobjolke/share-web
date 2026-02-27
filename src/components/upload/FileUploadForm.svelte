@@ -5,17 +5,17 @@
   import { settingsStore } from '../../stores/settings.js';
   import { link } from 'svelte-spa-router';
   import { formatFileSize } from '../../lib/utils.js';
+  import DynamicFields from './DynamicFields.svelte';
 
   let { entryId = null, onadded = null } = $props();
 
   const defaults = get(settingsStore);
   let file = $state(null);
   let subject = $state('');
-  let project = $state(defaults._project || '');
-  let sendEmail = $state(defaults._email !== false);
   let uploading = $state(false);
   let result = $state(null);
   let copied = $state(false);
+  let getValues = $state(() => ({}));
 
   function handleFileChange(e) {
     file = e.target.files?.[0] || null;
@@ -27,11 +27,13 @@
 
     uploading = true;
     try {
-      const extra = {};
+      const extra = getValues();
       if (subject.trim()) extra.subject = subject;
-      if (project.trim()) extra._project = project;
       if (entryId) extra._id = entryId;
-      if (!sendEmail) extra._email = 'false';
+      // For file uploads, boolean false must be sent as string 'false'
+      for (const [key, value] of Object.entries(extra)) {
+        if (value === false) extra[key] = 'false';
+      }
       const response = await uploadFile(file, extra);
       const trimmed = response.trim();
       const id = parseInt(trimmed);
@@ -51,12 +53,9 @@
   }
 
   function reset() {
-    const d = get(settingsStore);
     result = null;
     subject = '';
-    project = d._project || '';
     file = null;
-    sendEmail = d._email !== false;
   }
 </script>
 
@@ -99,16 +98,7 @@
         class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
       />
     </div>
-    <div>
-      <label for="file-project" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Project (optional)</label>
-      <input
-        id="file-project"
-        type="text"
-        bind:value={project}
-        placeholder="Project name"
-        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-      />
-    </div>
+    <DynamicFields {defaults} bind:getValues />
     <div>
       <label for="file-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">File</label>
       <input
@@ -122,11 +112,7 @@
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{file.name} ({formatFileSize(file.size)})</p>
       {/if}
     </div>
-    <div class="flex items-center justify-between">
-      <label class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-        <input type="checkbox" bind:checked={sendEmail} class="rounded" />
-        Send email notification
-      </label>
+    <div class="flex items-center justify-end">
       <button
         type="submit"
         disabled={uploading || !file}
