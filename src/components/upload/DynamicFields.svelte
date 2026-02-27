@@ -82,7 +82,7 @@
       {:else if field.type === 'bool'}
         <label class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
           <input type="checkbox" bind:checked={values[field.name]} class="rounded" />
-          {field.description || formatLabel(field.name)}
+          {formatLabel(field.name)}
         </label>
       {:else if field.type === 'int'}
         <label for="dynamic-{field.name}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{formatLabel(field.name)} (optional)</label>
@@ -102,7 +102,7 @@
           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
         />
       {/if}
-      {#if field.description && field.type !== 'bool'}
+      {#if field.description}
         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{field.description}</p>
       {/if}
     </div>
