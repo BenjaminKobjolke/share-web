@@ -1,5 +1,5 @@
 <script>
-  import { link } from 'svelte-spa-router';
+  import { link, push } from 'svelte-spa-router';
   import TypeBadge from './TypeBadge.svelte';
   import { formatDate, truncate } from '../../lib/utils.js';
 
@@ -19,7 +19,8 @@
     </thead>
     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
       {#each entries as entry (entry.id)}
-        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+            onclick={() => push('/entries/' + entry.id)}>
           <td class="px-4 py-3 text-sm">
             <a href="/entries/{entry.id}" use:link class="text-blue-600 dark:text-blue-400 hover:underline">#{entry.id}</a>
           </td>
