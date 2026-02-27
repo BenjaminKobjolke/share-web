@@ -11,8 +11,8 @@
   const defaults = get(settingsStore);
   let file = $state(null);
   let subject = $state('');
-  let project = $state(defaults.project || '');
-  let sendEmail = $state(defaults.sendEmail !== false);
+  let project = $state(defaults._project || '');
+  let sendEmail = $state(defaults._email !== false);
   let uploading = $state(false);
   let result = $state(null);
   let copied = $state(false);
@@ -54,9 +54,9 @@
     const d = get(settingsStore);
     result = null;
     subject = '';
-    project = d.project || '';
+    project = d._project || '';
     file = null;
-    sendEmail = d.sendEmail !== false;
+    sendEmail = d._email !== false;
   }
 </script>
 

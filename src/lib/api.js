@@ -99,6 +99,10 @@ export function uploadFile(file, extraFields = {}) {
   });
 }
 
+export function getFields() {
+  return json('/fields');
+}
+
 export function testAuth() {
   return json('/fields');
 }

@@ -9,9 +9,9 @@
 
   const defaults = get(settingsStore);
   let subject = $state('');
-  let project = $state(defaults.project || '');
+  let project = $state(defaults._project || '');
   let textOrUrl = $state('');
-  let sendEmail = $state(defaults.sendEmail !== false);
+  let sendEmail = $state(defaults._email !== false);
   let uploading = $state(false);
   let result = $state(null);
   let copied = $state(false);
@@ -49,9 +49,9 @@
     const d = get(settingsStore);
     result = null;
     subject = '';
-    project = d.project || '';
+    project = d._project || '';
     textOrUrl = '';
-    sendEmail = d.sendEmail !== false;
+    sendEmail = d._email !== false;
   }
 </script>
 
