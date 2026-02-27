@@ -14,6 +14,7 @@
   import SettingsBuiltInValues from './routes/SettingsBuiltInValues.svelte';
   import SettingsResourceManager from './routes/SettingsResourceManager.svelte';
   import SettingsCustomFields from './routes/SettingsCustomFields.svelte';
+  import About from './routes/About.svelte';
 
   let initialized = $state(false);
 
@@ -32,6 +33,7 @@
     '/settings/built-in-values': wrap({ component: SettingsBuiltInValues, conditions: [isAuthenticated] }),
     '/settings/custom-fields': wrap({ component: SettingsCustomFields, conditions: [isAuthenticated] }),
     '/settings/resources/:name': wrap({ component: SettingsResourceManager, conditions: [isAuthenticated] }),
+    '/about': wrap({ component: About, conditions: [isAuthenticated] }),
   };
 
   function conditionsFailed() {

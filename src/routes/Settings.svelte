@@ -21,5 +21,13 @@
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Custom Fields</h2>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Create, edit, or delete custom fields and their options.</p>
     </a>
+    <a
+      href="/about"
+      use:link
+      class="block bg-white dark:bg-gray-900 rounded-lg shadow p-6 hover:shadow-md transition-shadow border border-transparent hover:border-blue-200 dark:hover:border-blue-800"
+    >
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">About</h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">View version information and release notes.</p>
+    </a>
   </div>
 </div>
